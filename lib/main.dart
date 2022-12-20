@@ -63,11 +63,27 @@ class _PixabayPageState extends State<PixabayPage> {
         itemBuilder: (BuildContext context, int index) {
           Map<String, dynamic> hit = hits[index];
           return Stack(
+            fit: StackFit.expand,
             children: [
-              Image.network(hit['previewURL']),
-              Container(
-                color: Colors.white,
-                child: Text('${hit['likes']}'),
+              Image.network(
+                hit['previewURL'],
+                fit: BoxFit.cover,
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  color: Colors.white,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.thumb_up_alt,
+                        size: 14,
+                      ),
+                      Text('${hit['likes']}'),
+                    ],
+                  ),
+                ),
               )
             ],
           );
