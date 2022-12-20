@@ -25,11 +25,13 @@ class PixabayPage extends StatefulWidget {
 }
 
 class _PixabayPageState extends State<PixabayPage> {
+  List hits = [];
+
   Future<void> fetchImages() async {
     Response response = await Dio().get(
         'https://pixabay.com/api/?key=$Pixabay_API_KEY&q=yellow+flowers&image_type=photo');
-    int total = response.data['total'];
-    print(total);
+    hits = response.data['hits'];
+    setState(() {});
   }
 
   @override
