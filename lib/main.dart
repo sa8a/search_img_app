@@ -62,7 +62,15 @@ class _PixabayPageState extends State<PixabayPage> {
         itemCount: hits.length, // 最大要素数
         itemBuilder: (BuildContext context, int index) {
           Map<String, dynamic> hit = hits[index];
-          return Image.network(hit['previewURL']);
+          return Stack(
+            children: [
+              Image.network(hit['previewURL']),
+              Container(
+                color: Colors.white,
+                child: Text('${hit['likes']}'),
+              )
+            ],
+          );
         },
       ),
     );
