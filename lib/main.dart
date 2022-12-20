@@ -1,4 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'config.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,6 +25,19 @@ class PixabayPage extends StatefulWidget {
 }
 
 class _PixabayPageState extends State<PixabayPage> {
+  Future<void> fetchImages() async {
+    Response response = await Dio().get(
+        'https://pixabay.com/api/?key=$Pixabay_API_KEY&q=yellow+flowers&image_type=photo');
+    int total = response.data['total'];
+    print(total);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchImages();
+  }
+
   @override
   Widget build(BuildContext context) {
     return const Scaffold();
