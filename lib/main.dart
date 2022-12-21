@@ -118,3 +118,28 @@ class _PixabayPageState extends State<PixabayPage> {
     );
   }
 }
+
+class PixabayImage {
+  final String webformatURL;
+  final String previewURL;
+  final int likes;
+
+  // 名前無しコンストラクタ（順番など変わると困る）
+  // PixabayImage({this.webformatURL, this.previewURL, this.likes});
+
+  // 名前付きコンストラクタ（順番など変得てもエラーにならない、keyがあるので可読性が上がる）
+  PixabayImage({
+    required this.webformatURL,
+    required this.previewURL,
+    required this.likes,
+  });
+
+  // mapを受け取って、PixabayImageのインスタンスを作る
+  factory PixabayImage.fromMap(Map<String, dynamic> map) {
+    return PixabayImage(
+      webformatURL: map['webformatURL'],
+      previewURL: map['previewURL'],
+      likes: map['likes'],
+    );
+  }
+}
