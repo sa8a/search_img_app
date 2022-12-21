@@ -32,8 +32,13 @@ class _PixabayPageState extends State<PixabayPage> {
 
   // APIを通して画像を取得する
   Future<void> fetchImages(String text) async {
-    final response = await Dio().get(
-        'https://pixabay.com/api/?key=$Pixabay_API_KEY&q=$text&image_type=photo&per_page=100');
+    final response =
+        await Dio().get('https://pixabay.com/api', queryParameters: {
+      'key': Pixabay_API_KEY,
+      'q': text,
+      'image_type': 'photo',
+      'per_page': 100,
+    });
     // キャスト：List型と認識させる（以下の書き方でもOK）
     // final hits = response.data['hits'] as List;
     final List hits = response.data['hits'];
