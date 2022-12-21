@@ -31,7 +31,7 @@ class _PixabayPageState extends State<PixabayPage> {
   List hits = [];
 
   Future<void> fetchImages(String text) async {
-    Response response = await Dio().get(
+    final response = await Dio().get(
         'https://pixabay.com/api/?key=$Pixabay_API_KEY&q=$text&image_type=photo&per_page=100');
     hits = response.data['hits'];
     setState(() {});
@@ -64,18 +64,18 @@ class _PixabayPageState extends State<PixabayPage> {
         ),
         itemCount: hits.length, // 最大要素数
         itemBuilder: (BuildContext context, int index) {
-          Map<String, dynamic> hit = hits[index];
+          final hit = hits[index];
           return InkWell(
             onTap: () async {
               // 1. URLから画像をダウンロード
-              Response response = await Dio().get(
+              final response = await Dio().get(
                 hit['webformatURL'],
                 options: Options(responseType: ResponseType.bytes),
               );
 
               // 2. ダウンロードしたデータをファイルに保存
-              Directory dir = await getTemporaryDirectory();
-              File file = await File('${dir.path}/image.png')
+              final dir = await getTemporaryDirectory();
+              final file = await File('${dir.path}/image.png')
                   .writeAsBytes(response.data);
 
               // 3. Shareパッケージを呼び出して共有
