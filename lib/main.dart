@@ -28,13 +28,20 @@ class PixabayPage extends StatefulWidget {
 }
 
 class _PixabayPageState extends State<PixabayPage> {
-  List hits = [];
+  List<PixabayImage> pixabayImages = [];
 
   // APIを通して画像を取得する
   Future<void> fetchImages(String text) async {
     final response = await Dio().get(
         'https://pixabay.com/api/?key=$Pixabay_API_KEY&q=$text&image_type=photo&per_page=100');
-    hits = response.data['hits'];
+    // キャスト：List型と認識させる（以下の書き方でもOK）
+    // final hits = response.data['hits'] as List;
+    final List hits = response.data['hits'];
+    pixabayImages = hits.map(
+      (e) {
+        return PixabayImage.fromMap(e);
+      },
+    ).toList();
     setState(() {});
   }
 
@@ -80,18 +87,18 @@ class _PixabayPageState extends State<PixabayPage> {
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3, // 横に何個表示するか？
         ),
-        itemCount: hits.length, // 最大要素数
+        itemCount: pixabayImages.length, // 最大要素数
         itemBuilder: (BuildContext context, int index) {
-          final hit = hits[index];
+          final pixabayImage = pixabayImages[index];
           return InkWell(
             onTap: () async {
-              shareImage(hit['webformatURL']);
+              shareImage(pixabayImage.webformatURL);
             },
             child: Stack(
               fit: StackFit.expand,
               children: [
                 Image.network(
-                  hit['previewURL'],
+                  pixabayImage.previewURL,
                   fit: BoxFit.cover,
                 ),
                 Align(
@@ -105,7 +112,7 @@ class _PixabayPageState extends State<PixabayPage> {
                           Icons.thumb_up_alt,
                           size: 14,
                         ),
-                        Text('${hit['likes']}'),
+                        Text(pixabayImage.likes.toString()),
                       ],
                     ),
                   ),
