@@ -30,11 +30,29 @@ class PixabayPage extends StatefulWidget {
 class _PixabayPageState extends State<PixabayPage> {
   List hits = [];
 
+  // APIを通して画像を取得する
   Future<void> fetchImages(String text) async {
     final response = await Dio().get(
         'https://pixabay.com/api/?key=$Pixabay_API_KEY&q=$text&image_type=photo&per_page=100');
     hits = response.data['hits'];
     setState(() {});
+  }
+
+  // 画像をシェアする
+  Future<void> shareImage(String url) async {
+    // 1. URLから画像をダウンロード
+    final response = await Dio().get(
+      url,
+      options: Options(responseType: ResponseType.bytes),
+    );
+
+    // 2. ダウンロードしたデータをファイルに保存
+    final dir = await getTemporaryDirectory();
+    final file =
+        await File('${dir.path}/image.png').writeAsBytes(response.data);
+
+    // 3. Shareパッケージを呼び出して共有
+    Share.shareFiles([file.path]);
   }
 
   @override
@@ -67,19 +85,7 @@ class _PixabayPageState extends State<PixabayPage> {
           final hit = hits[index];
           return InkWell(
             onTap: () async {
-              // 1. URLから画像をダウンロード
-              final response = await Dio().get(
-                hit['webformatURL'],
-                options: Options(responseType: ResponseType.bytes),
-              );
-
-              // 2. ダウンロードしたデータをファイルに保存
-              final dir = await getTemporaryDirectory();
-              final file = await File('${dir.path}/image.png')
-                  .writeAsBytes(response.data);
-
-              // 3. Shareパッケージを呼び出して共有
-              Share.shareFiles([file.path]);
+              shareImage(hit['webformatURL']);
             },
             child: Stack(
               fit: StackFit.expand,
