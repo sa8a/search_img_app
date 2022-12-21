@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'config.dart';
 
 void main() {
@@ -63,7 +66,21 @@ class _PixabayPageState extends State<PixabayPage> {
         itemBuilder: (BuildContext context, int index) {
           Map<String, dynamic> hit = hits[index];
           return InkWell(
-            onTap: () {},
+            onTap: () async {
+              // 1. URLから画像をダウンロード
+              Response response = await Dio().get(
+                hit['webformatURL'],
+                options: Options(responseType: ResponseType.bytes),
+              );
+
+              // 2. ダウンロードしたデータをファイルに保存
+              Directory dir = await getTemporaryDirectory();
+              File file = await File('${dir.path}/image.png')
+                  .writeAsBytes(response.data);
+
+              // 3. Shareパッケージを呼び出して共有
+              Share.shareFiles([file.path]);
+            },
             child: Stack(
               fit: StackFit.expand,
               children: [
